@@ -1,0 +1,113 @@
+# Ultralytics YOLO 🚀, AGPL-3.0 license
+# Default training settings and hyperparameters for medium-augmentation COCO training
+
+task: detect  # (str) YOLO task, i.e. detect, segment, classify, pose
+mode: train  # (str) YOLO mode, i.e. train, val, predict, export, track, benchmark
+
+# Train settings -------------------------------------------------------------------------------------------------------
+model:  # (str, optional) path to model file, i.e. yolov8n.pt, yolov8n.yaml
+data: D:\software\pycharm_project\original_ultralytics-main\driver\data.yaml  # (str, optional) path to data file, i.e. coco128.yaml
+epochs: 1  # (int) number of epochs to train for
+patience: 2  # 等待没有明显改善以提前停止训练的时期  (int) epochs to wait for no observable improvement for early stopping of training
+batch: 8  # 每批图像数（自动批处理为 -1） (int) number of images per batch (-1 for AutoBatch)
+imgsz: 640  # (int | list) input images size as int for train and val modes, or list[w,h] for predict and export modes
+save: True  # 保存列车检查点并预测结果 (bool) save train checkpoints and predict results
+save_period: -1 #保存列车检查点并预测结果 (int) Save checkpoint every x epochs (disabled if < 1)
+cache: disk  #111 真/内存、磁盘或假。使用缓存加载数据 True会加快运行速度，但是吃内存 (bool) True/ram, disk or False. Use cache for data loading
+device:  # 调用的时哪个gpu  (int | str | list, optional) device to run on, i.e. cuda device=0 or device=0,1,2,3 or device=cpu
+workers: 8  #用于数据加载的工作线程数（如果为 DDP，则按 RANK 计算），服务器可设置为8  (int) number of worker threads for data loading (per RANK if DDP)
+project:  # 项目名称 (str, optional) project name
+name:  #实验名称  (str, optional) experiment name, results saved to 'project/name' directory
+exist_ok: False  # 	是否覆盖现有实验 (bool) whether to overwrite existing experiment
+optimizer: SGD  #111要使用的优化器， choices=[SGD， Adam， Adamax， AdamW， NAdam， RAdam， RMSProp， auto]        (str) optimizer to use, choices=[SGD, Adam, Adamax, AdamW, NAdam, RAdam, RMSProp, auto]
+verbose: False  #111是否打印详细输出     (bool) whether to print verbose output
+seed: 0  #用于重现性的随机种子  (int) random seed for reproducibility
+deterministic: True  #是否启用确定性模式，保证实验的可复现性。  (bool) whether to enable deterministic mode
+single_cls: False  #将多类数据训练为单类，如果你的数据集是多类别，这个参数设置为True的话，其会当做一个类别来进行训练，相当于只负责识别目标，不负责识别类别。  (bool) train multi-class data as single-class
+rect: False  #形训练，每批整理以获得最小的填充  (bool) rectangular training if mode='train' or rectangular validation if mode='val'
+cos_lr: False  # 使用余弦学习速率调度程序  (bool) use cosine learning rate scheduler
+close_mosaic: 10  #默认值为10，意思就是在最后10个epochs关闭马赛克数据增强   (int) disable mosaic augmentation for final epochs
+resume: True  #是否继续上一次没完成的训练   (bool) resume training from last checkpoint
+amp: True  # 自动混合精度 （AMP） 训练，选择=[真，假]     (bool) Automatic Mixed Precision (AMP) training, choices=[True, False], True runs AMP check
+fraction: 1.0  #	要训练的数据集分数（默认值为 1.0，训练集中的所有图像）     (float) dataset fraction to train on (default is 1.0, all images in train set)
+profile: False  #在记录器训练期间分析 ONNX 和 TensorRT 速度    (bool) profile ONNX and TensorRT speeds during training for loggers
+# Segmentation
+overlap_mask: True  # (bool) masks should overlap during training (segment train only)
+mask_ratio: 4  # (int) mask downsample ratio (segment train only)
+# Classification
+dropout: False  #111训练期间口罩应重叠（仅限分段训练） (float) use dropout regularization (classify train only)
+
+# Val/Test settings ----------------------------------------------------------------------------------------------------
+val: True  # (bool) validate/test during training
+split: val  #数据集拆分用于验证，即“val”、“test”或“train,此处指val这个数据集用于验证  (str) dataset split to use for validation, i.e. 'val', 'test' or 'train'
+save_json: False  #将结果保存到 JSON 文件 save results to JSON file
+save_hybrid: False  # 保存混合版本的标签（标签 + 其他预测） save hybrid version of labels (labels + additional predictions)
+conf:   #用于检测的对象置信度阈值,预测时默认0.25，验证默认时0.001 object confidence threshold for detection (default 0.25 predict, 0.001 val)
+iou: 0.7  #NMS 的联合 （IoU） 阈值上的交集  (float) intersection over union (IoU) threshold for NMS
+max_det: 300  #	每个图像的最大检测数  (int) maximum number of detections per image
+half: True  #111	使用半精度 （FP16） use half precision (FP16)
+dnn: False  #使用 OpenCV DNN 进行 ONNX 推理 (bool) use OpenCV DNN for ONNX inference
+plots: True  #每个图像的最大检测数 (bool) save plots during train/val
+
+# Prediction settings 预测模型的参数设置  conf iou imgsz half device save:保存包含结果的图像-----------------------------------------------------------------
+source:  # 图片或视频的源目录(str, optional) source directory for images or videos  图像所在位置
+show: False  # 	如果可能，显示结果 (bool) show results if possible  是否显示结果
+save_txt: False  # 	将结果另存为.txt文件  (bool) save results as .txt file   将结果保存成txt
+save_conf: False  #	使用置信度分数保存结果  (bool) save results with confidence scores  保存待置信度得分的结果
+save_crop: False  #	保存裁剪的图像和结果 (bool) save cropped images with results     保存裁剪后带结果的图像
+show_labels: True  # (bool) show object labels in plots         在绘图中显示对象标签
+show_conf: True  # (bool) show object confidence scores in plots  在绘图中显示置信度得分
+vid_stride: 1  # (int) video frame-rate stride                  视频帧率跨度
+line_width:   # (int, optional) line width of the bounding boxes, auto if missing   边界框的厚度（像素）
+visualize: False  # (bool) visualize model features             可视化模型的特征
+augment: False  #是否使用测试数据增强  (bool) apply image augmentation to prediction sources   对测试眼应用图像加强
+agnostic_nms: False  # (bool) class-agnostic NMS                    类无关NMS
+classes:  # (int | list[int], optional) filter results by class, i.e. class=0, or class=[0,2,3]	按类过滤结果，即类=0，或类=[0，2，3]
+retina_masks: False  # (bool) use high-resolution segmentation masks      使用高分辨率分割掩膜
+boxes: True  # (bool) Show boxes in segmentation predictions      在分割预测中显示边界框
+
+# Export settings ------------------------------------------------------------------------------------------------------
+format: torchscript  # (str) format to export to, choices at https://docs.ultralytics.com/modes/export/#export-formats
+keras: False  # (bool) use Kera=s
+optimize: False  # (bool) TorchScript: optimize for mobile
+int8: False  # (bool) CoreML/TF INT8 quantization
+dynamic: False  # (bool) ONNX/TF/TensorRT: dynamic axes
+simplify: False  # (bool) ONNX: simplify model
+opset: 17  #111 (int, optional) ONNX: opset version
+workspace: 4  # (int) TensorRT: workspace size (GB)
+nms: False  # (bool) CoreML: add NMS
+
+# Hyperparameters ------------------------------------------------------------------------------------------------------
+lr0: 0.01  #初始学习率    (float) initial learning rate (i.e. SGD=1E-2, Adam=1E-3)
+lrf: 0.01  #最终学习率       (float) final learning rate (lr0 * lrf)
+momentum: 0.937  #新加坡元动量/亚当贝塔1     (float) SGD momentum/Adam beta1
+weight_decay: 0.001  #111优化器重量衰减 5E-4    (float) optimizer weight decay 5e-4
+warmup_epochs: 3.0  #优化器重量衰减 5E-4        (float) warmup epochs (fractions ok)
+warmup_momentum: 0.8  #预热初始动量    (float) warmup initial momentum
+warmup_bias_lr: 0.1  #	预热初始偏置 LR     (float) warmup initial bias lr
+box: 7.5  #	箱子损失收益    (float) box loss gain
+cls: 0.5  #	CLS 损耗增益（随像素缩放）    (float) cls loss gain (scale with pixels)
+dfl: 1.5  # 	CLS 损耗增益（随像素缩放）   (float) dfl loss gain
+pose: 12.0  #	姿势损失增益（仅姿势）  (float) pose loss gain
+kobj: 1.0  #	关键点 OBJ 损失增益（仅姿势 (float) keypoint obj loss gain
+label_smoothing: 0.0  #标签平滑（分数）    (float) label smoothing (fraction)
+nbs: 64  #公称批量大小 (int) nominal batch size
+hsv_h: 0.015  # (float) image HSV-Hue augmentation (fraction)
+hsv_s: 0.7  # (float) image HSV-Saturation augmentation (fraction)
+hsv_v: 0.4  # (float) image HSV-Value augmentation (fraction)
+degrees: 0.0  # (float) image rotation (+/- deg)
+translate: 0.1  # (float) image translation (+/- fraction)
+scale: 0.5  # (float) image scale (+/- gain)
+shear: 0.0  # (float) image shear (+/- deg)
+perspective: 0.0  # (float) image perspective (+/- fraction), range 0-0.001
+flipud: 0.0  # (float) image flip up-down (probability)
+fliplr: 0.5  # (float) image flip left-right (probability)
+mosaic: 1.0  # (float) image mosaic (probability)
+mixup: 0.0  # (float) image mixup (probability)
+copy_paste: 0.0  # (float) segment copy-paste (probability)
+
+# Custom config.yaml ---------------------------------------------------------------------------------------------------
+cfg:  # (str, optional) for overriding defaults.yaml
+
+# Tracker settings ------------------------------------------------------------------------------------------------------
+tracker: botsort.yaml  # (str) tracker type, choices=[botsort.yaml, bytetrack.yaml]
